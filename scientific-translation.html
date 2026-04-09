@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scientific Translation — Elaina Niederer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --cream:#f5f2ec; --moss:#3d5a2f; --sage:#8aaa6e; --chrome-light:#e8ede8; --ink:#1a1f1a; --ink-soft:#3a3f3a; --white:#fafaf8; --silver:#b0b8b0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body { background:var(--cream); color:var(--ink); font-family:'DM Mono',monospace; font-weight:300; overflow-x:hidden; cursor:none; }
+  .cursor { position:fixed; width:10px; height:10px; background:var(--moss); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); mix-blend-mode:multiply; }
+  .cursor-ring { position:fixed; width:36px; height:36px; border:1px solid var(--moss); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); opacity:.5; transition:all .18s ease; }
+
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:1.5rem 3rem; background:rgba(245,242,236,0.92); backdrop-filter:blur(8px); border-bottom:1px solid rgba(60,90,40,0.08); }
+  .nav-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:.75rem; letter-spacing:.3em; text-transform:uppercase; color:var(--ink); text-decoration:none; }
+  .nav-back { font-family:'DM Mono',monospace; font-size:.65rem; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft); text-decoration:none; transition:color .2s; }
+  .nav-back:hover { color:var(--moss); }
+  .nav-links { display:flex; gap:2rem; list-style:none; }
+  .nav-links a { font-size:.65rem; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft); text-decoration:none; transition:color .2s; }
+  .nav-links a:hover { color:var(--moss); }
+
+  .project-hero { padding:10rem 3rem 5rem; display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:end; border-bottom:1px solid rgba(60,90,40,0.1); position:relative; overflow:hidden; }
+  .project-hero::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(90,130,60,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(90,130,60,0.03) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; }
+  .hero-cat { font-size:.58rem; letter-spacing:.4em; text-transform:uppercase; color:var(--sage); margin-bottom:1.2rem; }
+  .hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2.5rem,5.5vw,5rem); font-weight:300; line-height:.95; letter-spacing:-.02em; margin-bottom:1.5rem; }
+  .hero-title em { font-style:italic; color:var(--moss); }
+  .hero-desc { font-size:.7rem; line-height:2; color:var(--ink-soft); max-width:420px; }
+  .hero-tags { margin-top:2rem; display:flex; gap:.75rem; flex-wrap:wrap; }
+  .tag { font-size:.55rem; letter-spacing:.2em; text-transform:uppercase; padding:.3rem .8rem; border:1px solid rgba(90,130,60,0.3); color:var(--sage); }
+  .detail-block { background:var(--chrome-light); border:1px solid rgba(90,130,60,0.1); padding:2.5rem; }
+  .detail-row { display:flex; justify-content:space-between; align-items:baseline; padding:.9rem 0; border-bottom:1px solid rgba(60,90,40,0.08); }
+  .detail-row:last-child { border-bottom:none; }
+  .detail-label { font-size:.55rem; letter-spacing:.3em; text-transform:uppercase; color:var(--sage); }
+  .detail-value { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:300; text-align:right; }
+
+  .overview { background:var(--moss); padding:4rem 3rem; }
+  .overview-label { font-size:.58rem; letter-spacing:.4em; text-transform:uppercase; color:var(--sage); margin-bottom:1.5rem; }
+  .overview p { font-family:'Cormorant Garamond',serif; font-size:clamp(1rem,2vw,1.4rem); font-weight:300; line-height:1.75; color:rgba(245,242,236,0.9); font-style:italic; max-width:900px; }
+
+  /* ARTICLE LAYOUT */
+  .article-area { padding:6rem 3rem; background:var(--white); }
+  .article-grid { display:grid; grid-template-columns:200px 1fr; gap:5rem; max-width:1100px; }
+  .article-sidebar { position:sticky; top:7rem; align-self:start; }
+  .sidebar-label { font-size:.55rem; letter-spacing:.35em; text-transform:uppercase; color:var(--sage); margin-bottom:1rem; }
+  .toc-list { list-style:none; display:flex; flex-direction:column; gap:.5rem; }
+  .toc-list a { font-size:.6rem; color:var(--ink-soft); text-decoration:none; padding-left:1rem; border-left:1px solid transparent; transition:all .2s; }
+  .toc-list a:hover { color:var(--moss); border-left-color:var(--moss); }
+
+  .article-body { max-width:680px; }
+  .art-meta { display:flex; gap:2rem; align-items:baseline; margin-bottom:3rem; padding-bottom:2rem; border-bottom:1px solid rgba(60,90,40,0.1); }
+  .art-date { font-size:.6rem; letter-spacing:.2em; color:var(--silver); text-transform:uppercase; }
+  .art-author { font-size:.6rem; letter-spacing:.2em; color:var(--sage); text-transform:uppercase; }
+  .art-hero-img { width:100%; margin-bottom:3rem; display:block; }
+  .art-hero-img img { width:100%; height:320px; object-fit:cover; filter:saturate(.7); display:block; }
+  .art-img-cap { font-size:.58rem; color:var(--silver); margin-top:.5rem; letter-spacing:.1em; }
+
+  .art-section-label { font-size:.58rem; letter-spacing:.35em; text-transform:uppercase; color:var(--sage); margin:3rem 0 1rem; display:flex; align-items:center; gap:1rem; }
+  .art-section-label::after { content:''; flex:1; max-width:60px; height:1px; background:var(--sage); opacity:.4; }
+  .art-h2 { font-family:'Cormorant Garamond',serif; font-size:1.9rem; font-weight:400; line-height:1.2; color:var(--ink); margin-bottom:1.2rem; }
+  .art-h3 { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:300; font-style:italic; color:var(--moss); margin:2.5rem 0 .75rem; }
+  .art-p { font-family:'Cormorant Garamond',serif; font-size:1.05rem; line-height:1.9; color:var(--ink-soft); margin-bottom:1.4rem; }
+  .art-p a { color:var(--moss); text-decoration:none; border-bottom:1px solid rgba(61,90,47,0.3); }
+  .art-pull { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; font-style:italic; line-height:1.4; color:var(--moss); border-left:3px solid var(--moss); padding:1.5rem 2rem; margin:3rem 0; background:rgba(90,130,60,0.04); }
+  .art-footnote { font-size:.62rem; line-height:1.8; color:var(--silver); margin-top:3rem; padding-top:1.5rem; border-top:1px solid rgba(60,90,40,0.1); font-style:italic; }
+
+  .project-nav { background:var(--cream); border-top:1px solid rgba(60,90,40,0.1); display:grid; grid-template-columns:1fr 1fr; }
+  .pnav-item { padding:3rem; text-decoration:none; color:var(--ink); transition:background .2s; display:flex; flex-direction:column; gap:.5rem; }
+  .pnav-item:first-child { border-right:1px solid rgba(60,90,40,0.1); }
+  .pnav-item:hover { background:var(--chrome-light); }
+  .pnav-dir { font-size:.55rem; letter-spacing:.35em; text-transform:uppercase; color:var(--sage); }
+  .pnav-title { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; }
+  .pnav-item.next { text-align:right; }
+  footer { background:var(--ink); padding:3rem; display:flex; justify-content:space-between; align-items:center; }
+  footer p { font-size:.6rem; letter-spacing:.2em; color:rgba(255,255,255,.3); text-transform:uppercase; }
+  footer a { font-size:.6rem; letter-spacing:.2em; color:var(--sage); text-decoration:none; text-transform:uppercase; }
+  .reveal { opacity:0; transform:translateY(16px); transition:opacity .6s ease,transform .6s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+  @media(max-width:768px){ nav{padding:1rem 1.5rem;} .project-hero{grid-template-columns:1fr;padding:8rem 1.5rem 3rem;} .article-area{padding:4rem 1.5rem;} .article-grid{grid-template-columns:1fr;gap:2rem;} .article-sidebar{position:static;} .project-nav{grid-template-columns:1fr;} .pnav-item:first-child{border-right:none;border-bottom:1px solid rgba(60,90,40,0.1);} body{cursor:auto;} .cursor,.cursor-ring{display:none;} }
+</style>
+</head>
+<body>
+
+<!-- Floating heart back-to-top -->
+<button id="heart-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top" style="position:fixed;bottom:2.2rem;right:2.5rem;z-index:600;background:none;border:none;cursor:pointer;padding:0;">
+  <svg width="44" height="40" viewBox="0 0 54 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation:heartBeat 2.4s ease-in-out infinite;filter:drop-shadow(0 0 6px rgba(138,170,110,.7));">
+    <rect x="5"  y="0"  width="5" height="5" fill="rgba(138,170,110,.6)"/>
+    <rect x="10" y="0"  width="5" height="5" fill="rgba(168,208,128,.5)"/>
+    <rect x="30" y="0"  width="5" height="5" fill="rgba(138,170,110,.6)"/>
+    <rect x="35" y="0"  width="5" height="5" fill="rgba(168,208,128,.5)"/>
+    <rect x="0"  y="5"  width="5" height="5" fill="rgba(158,198,118,.7)"/>
+    <rect x="5"  y="5"  width="5" height="5" fill="rgba(200,240,160,.95)"/>
+    <rect x="10" y="5"  width="5" height="5" fill="rgba(178,218,138,.85)"/>
+    <rect x="15" y="5"  width="5" height="5" fill="rgba(148,188,108,.65)"/>
+    <rect x="25" y="5"  width="5" height="5" fill="rgba(148,188,108,.65)"/>
+    <rect x="30" y="5"  width="5" height="5" fill="rgba(178,218,138,.85)"/>
+    <rect x="35" y="5"  width="5" height="5" fill="rgba(200,240,160,.95)"/>
+    <rect x="40" y="5"  width="5" height="5" fill="rgba(158,198,118,.7)"/>
+    <rect x="0"  y="10" width="5" height="5" fill="rgba(168,208,128,.8)"/>
+    <rect x="5"  y="10" width="5" height="5" fill="rgba(210,252,170,1)"/>
+    <rect x="10" y="10" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="15" y="10" width="5" height="5" fill="rgba(200,245,160,.95)"/>
+    <rect x="20" y="10" width="5" height="5" fill="rgba(175,220,135,.8)"/>
+    <rect x="25" y="10" width="5" height="5" fill="rgba(175,220,135,.8)"/>
+    <rect x="30" y="10" width="5" height="5" fill="rgba(200,245,160,.95)"/>
+    <rect x="35" y="10" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="40" y="10" width="5" height="5" fill="rgba(210,252,170,1)"/>
+    <rect x="45" y="10" width="5" height="5" fill="rgba(168,208,128,.8)"/>
+    <rect x="0"  y="15" width="5" height="5" fill="rgba(158,198,118,.75)"/>
+    <rect x="5"  y="15" width="5" height="5" fill="rgba(210,252,170,.95)"/>
+    <rect x="10" y="15" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="15" y="15" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="20" y="15" width="5" height="5" fill="rgba(210,250,168,.95)"/>
+    <rect x="25" y="15" width="5" height="5" fill="rgba(195,240,155,.9)"/>
+    <rect x="30" y="15" width="5" height="5" fill="rgba(210,250,168,.95)"/>
+    <rect x="35" y="15" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="40" y="15" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="45" y="15" width="5" height="5" fill="rgba(210,252,170,.95)"/>
+    <rect x="50" y="15" width="5" height="5" fill="rgba(158,198,118,.75)"/>
+    <rect x="5"  y="20" width="5" height="5" fill="rgba(190,235,150,.88)"/>
+    <rect x="10" y="20" width="5" height="5" fill="rgba(215,255,175,.98)"/>
+    <rect x="15" y="20" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="20" y="20" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="25" y="20" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="30" y="20" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="35" y="20" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="40" y="20" width="5" height="5" fill="rgba(215,255,175,.98)"/>
+    <rect x="45" y="20" width="5" height="5" fill="rgba(190,235,150,.88)"/>
+    <rect x="10" y="25" width="5" height="5" fill="rgba(180,225,140,.82)"/>
+    <rect x="15" y="25" width="5" height="5" fill="rgba(215,255,175,.95)"/>
+    <rect x="20" y="25" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="25" y="25" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="30" y="25" width="5" height="5" fill="rgba(220,255,180,1)"/>
+    <rect x="35" y="25" width="5" height="5" fill="rgba(215,255,175,.95)"/>
+    <rect x="40" y="25" width="5" height="5" fill="rgba(180,225,140,.82)"/>
+    <rect x="15" y="30" width="5" height="5" fill="rgba(168,215,128,.75)"/>
+    <rect x="20" y="30" width="5" height="5" fill="rgba(205,250,165,.92)"/>
+    <rect x="25" y="30" width="5" height="5" fill="rgba(215,255,172,.97)"/>
+    <rect x="30" y="30" width="5" height="5" fill="rgba(205,250,165,.92)"/>
+    <rect x="35" y="30" width="5" height="5" fill="rgba(168,215,128,.75)"/>
+    <rect x="20" y="35" width="5" height="5" fill="rgba(155,205,115,.68)"/>
+    <rect x="25" y="35" width="5" height="5" fill="rgba(195,242,152,.88)"/>
+    <rect x="30" y="35" width="5" height="5" fill="rgba(155,205,115,.68)"/>
+    <rect x="25" y="40" width="5" height="5" fill="rgba(138,188,100,.55)"/>
+  </svg>
+</button>
+<style>
+  @keyframes heartBeat {
+    0%,100% { transform:scale(1);    filter:drop-shadow(0 0 5px rgba(138,170,110,.6)); }
+    50%      { transform:scale(1.1); filter:drop-shadow(0 0 14px rgba(138,170,110,1)); }
+  }
+  #heart-btn::before {
+    content:''; position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:48px; height:48px; border-radius:50%;
+    background:radial-gradient(circle, rgba(138,170,110,.3) 0%, transparent 70%);
+    animation:heartGlow 2.4s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes heartGlow {
+    0%,100% { transform:translate(-50%,-50%) scale(1);   opacity:.5; }
+    50%      { transform:translate(-50%,-50%) scale(1.7); opacity:1; }
+  }
+</style>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">Elaina Niederer</a>
+  <ul class="nav-links">
+    <li><a href="index.html#work">Work</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <a href="index.html#work" class="nav-back">← All Projects</a>
+</nav>
+
+<div class="project-hero">
+  <div class="hero-meta reveal">
+    <p class="hero-cat">Writing Samples — 02 / 03</p>
+    <h1 class="hero-title">Scientific<br><em>Translation</em></h1>
+    <p class="hero-desc">Translating contested fluoride neurotoxicity research into a public-facing editorial for science-conscious peers — using the metaphor of a river's undercurrent to frame the debate.</p>
+    <div class="hero-tags">
+      <span class="tag">Science Writing</span>
+      <span class="tag">Editorial</span>
+      <span class="tag">Metaphor</span>
+      <span class="tag">Public Health</span>
+    </div>
+  </div>
+  <div class="hero-detail reveal">
+    <div class="detail-block">
+      <div class="detail-row"><span class="detail-label">Type</span><span class="detail-value">Scientific Translation Article</span></div>
+      <div class="detail-row"><span class="detail-label">Audience</span><span class="detail-value">Science-Conscious Peers</span></div>
+      <div class="detail-row"><span class="detail-label">Technique</span><span class="detail-value">Extended Metaphor</span></div>
+      <div class="detail-row"><span class="detail-label">Published</span><span class="detail-value">December 13, 2025</span></div>
+      <div class="detail-row"><span class="detail-label">Topic</span><span class="detail-value">Fluoride &amp; Neurodevelopment</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="overview reveal">
+  <p class="overview-label">Assignment Context</p>
+  <p>"I was tasked with taking a set of scientific articles and translating them into an article suitable for a specific audience — using a metaphor to support the framing. I chose to cover the most controversial studies in the fluoride neurotoxicity debate, using the metaphor of a river's undercurrent to represent the complex, nuanced factors at play beneath the surface of polarized arguments."</p>
+</div>
+
+<div class="article-area">
+  <div class="article-grid">
+    <aside class="article-sidebar reveal">
+      <p class="sidebar-label">Sections</p>
+      <ul class="toc-list">
+        <li><a href="#shift">A Shift Beneath the Surface</a></li>
+        <li><a href="#science">The Science Speaks</a></li>
+        <li><a href="#controversy">Controversy</a></li>
+        <li><a href="#choice">Public Health & Choice</a></li>
+        <li><a href="#legal">Legal Reckoning</a></li>
+        <li><a href="#narrative">Rethinking the Narrative</a></li>
+      </ul>
+    </aside>
+
+    <article class="article-body reveal">
+      <div class="art-meta">
+        <span class="art-date">December 13, 2025</span>
+        <span class="art-author">Elaina Niederer</span>
+      </div>
+
+      <div class="art-hero-img">
+        <img src="https://static.wixstatic.com/media/11062b_97866c8d46a94dcdb732d9cc58fbf868~mv2.jpg" alt="Water texture" onerror="this.parentElement.style.background='#c5d9d5'; this.parentElement.style.height='320px'; this.remove();">
+        <p class="art-img-cap">Water Texture — visual reference for the river undercurrent metaphor</p>
+      </div>
+
+      <h2 class="art-h2">Troubled Waters: Rethinking Public Health Narratives About Fluoride</h2>
+
+      <h3 class="art-h3" id="shift">A Shift Beneath the Surface</h3>
+      <p class="art-p">For decades, fluoridation has been hailed as a public health victory, a simple yet powerful tool in the fight against tooth decay. Dental and medical associations across the world have championed its benefits, pointing to its role in reducing cavities and improving oral health equity. In an era when access to dental care was far from universal, fluoridating municipal water was nothing short of a breakthrough.</p>
+      <p class="art-p">But times change. Today, fluoride is readily available in toothpaste, mouthwash, and other consumer products, while access to dental services has expanded significantly. This shift raises an important question: Does fluoridated water still serve a necessary public health function, or is it an outdated intervention that warrants reconsideration? Beneath the surface of this debate is a growing undercurrent of concern — one that asks whether this long-standing practice carries hidden risks, particularly for the developing brains of unborn children.</p>
+
+      <div class="art-pull">"Beneath the surface of this debate is a growing undercurrent of concern — one that asks whether this long-standing practice carries hidden risks."</div>
+
+      <h3 class="art-h3" id="science">The Science Speaks: Reassessing the Evidence</h3>
+      <p class="art-p">A <a href="https://jamanetwork.com/journals/jamapediatrics/fullarticle/2748634" target="_blank">2019 study</a> published in JAMA Pediatrics ignited fresh scrutiny of fluoride's safety. Researchers found a troubling association between maternal fluoride exposure and lower childhood IQ scores. The study, which analyzed 601 mother-child pairs across six Canadian cities, measured fluoride levels in maternal urine throughout pregnancy. When the children reached ages three and four, standardized cognitive tests revealed a significant finding: a 1-milligram increase in maternal urinary fluoride was linked to a 4.5-point drop in IQ for boys.</p>
+      <p class="art-p">Adding weight to these concerns, a <a href="https://pubmed.ncbi.nlm.nih.gov/28937959/" target="_blank">2017 study</a> conducted in Mexico reported similar links between prenatal fluoride exposure and lower cognitive scores in children aged four to twelve. Research published in NeuroToxicology further suggested that even moderate fluoride exposure during pregnancy could hinder early cognitive development, as measured by the Bayley Scales of Infant Development.</p>
+      <p class="art-p">Taken together, these studies paint a more complex picture of fluoride's effects — one that extends beyond its well-documented dental benefits and into the realm of neurodevelopment.</p>
+
+      <h3 class="art-h3" id="controversy">Controversy and Cognitive Dissonance</h3>
+      <p class="art-p">The fluoride debate, much like a river with hidden currents, is fraught with resistance and polarization. Public health authorities have long assured the public of fluoride's safety, and these new findings have been met with skepticism. When the JAMA Pediatrics study was published, its authors faced intense scrutiny. Critics questioned their methodology, statistical models, and even the plausibility of fluoride's differential impact on boys versus girls.</p>
+      <p class="art-p">Yet, the researchers stood by their work, emphasizing that their study accounted for socioeconomic status, maternal IQ, and other potential confounders. The Science Media Centre acknowledged the study's limitations but also underscored the need for further research. Some experts argued that statistical associations do not necessarily imply causation, urging replication of the findings in other populations.</p>
+
+      <h3 class="art-h3" id="choice">Public Health and the Question of Choice</h3>
+      <p class="art-p">One of the most pressing aspects of this debate is the issue of personal choice. Fluoridating public water supplies may have been a necessary intervention decades ago, but today, it removes the ability of individuals to decide whether they want to ingest fluoride. This universal approach contrasts with modern public health paradigms that emphasize informed consent and personal autonomy.</p>
+      <p class="art-p">Advocates for reexamining fluoridation policies aren't calling for fluoride's elimination; rather, they propose a shift toward choice. By maintaining fluoride's availability through dental products and supplements while removing it from public water, individuals — especially pregnant women and parents of young children — would have greater control over their fluoride intake.</p>
+
+      <h3 class="art-h3" id="legal">A Legal and Public Reckoning</h3>
+      <p class="art-p">What was once a scientific debate has now moved into legal and public policy arenas. In 2024, the Fluoride Action Network and allied organizations secured a historic victory in federal court, compelling the EPA to revisit its fluoride safety standards. The court's ruling found that the EPA's long-standing fluoridation guideline of 0.7 mg/L posed an "unreasonable risk" to children's cognitive development.</p>
+      <p class="art-p">This decision highlighted gaps in regulatory oversight and underscored the disproportionate impact of fluoride exposure on vulnerable populations, including formula-fed infants, African Americans, and low-income families — groups that often face higher exposure risks due to systemic inequities.</p>
+
+      <h3 class="art-h3" id="narrative">Rethinking the Narrative</h3>
+      <p class="art-p">The fluoride debate is not just about science; it's about trust. At its core, this controversy reflects the tension between entrenched public health policies and the evolving nature of scientific understanding. Science is not static, and public health should be an adaptive discipline — one that responds to new evidence rather than clinging to long-held assumptions.</p>
+      <p class="art-p">Fluoridation was introduced during an era of broad public health interventions, when the tools to examine its long-term neurodevelopmental effects simply did not exist. Today, with modern research shedding new light on fluoride's potential risks, it's time for public health institutions to ask hard questions: Do the benefits of fluoridation still outweigh the risks, particularly for vulnerable groups?</p>
+
+      <div class="art-pull">"Health policies should not be monuments to tradition but living frameworks that adapt to new data."</div>
+
+      <p class="art-p">Public trust in health institutions is built on transparency, responsiveness, and a willingness to engage in difficult conversations. Health policies should not be monuments to tradition but living frameworks that adapt to new data. When evidence challenges established practice, the response should be curiosity — not dismissal.</p>
+
+      <p class="art-footnote">This article was written as an academic exercise in scientific translation. All linked studies and sources are real and publicly accessible. The goal was to engage a science-conscious audience in evidence-based dialogue about a contested public health topic.</p>
+    </article>
+  </div>
+</div>
+
+<div class="project-nav">
+  <a href="press-release.html" class="pnav-item">
+    <span class="pnav-dir">← Previous</span>
+    <span class="pnav-title">Press Release</span>
+  </a>
+  <a href="alumna-profile.html" class="pnav-item next">
+    <span class="pnav-dir">Next Project →</span>
+    <span class="pnav-title">Alumna Profile</span>
+  </a>
+</div>
+
+<footer>
+  <p>© 2025 Elaina Niederer</p>
+  <p>Writing Samples — 02 / 03</p>
+  <a href="http://www.linkedin.com/in/elaina-n-55b5a625a" target="_blank">LinkedIn ↗</a>
+</footer>
+
+<script>
+  const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+  function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
+  animRing();
+  document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>{cursor.style.width='18px';cursor.style.height='18px';});el.addEventListener('mouseleave',()=>{cursor.style.width='10px';cursor.style.height='10px';});});
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
