@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAPPA Studio Faces Backlash — Elaina Niederer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+  --bg:        #080e08;
+  --bg-2:      #0d150d;
+  --bg-3:      #111c11;
+  --cream:     #f0ede6;
+  --moss:      #3d5a2f;
+  --sage:      #7aaa5a;
+  --sage-dim:  #4a7a34;
+  --glow:      rgba(122,170,90,.18);
+  --glow-hi:   rgba(122,170,90,.55);
+  --silver:    #9ab09a;
+  --chrome:    #c8d8c0;
+  --ink:       #e8f0e0;
+  --ink-dim:   #7a9a7a;
+  --border:    rgba(122,170,90,.12);
+  --border-hi: rgba(122,170,90,.35);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; font-size:16px; }
+body {
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'DM Mono', monospace;
+  font-weight:300;
+  overflow-x:hidden;
+  cursor:none;
+}
+a { color:inherit; text-decoration:none; }
+img { display:block; max-width:100%; }
+
+/* ═══════════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════════ */
+#cur {
+  position:fixed; z-index:9999; pointer-events:none;
+  width:8px; height:8px; border-radius:50%;
+  background:var(--sage);
+  transform:translate(-50%,-50%);
+  transition:width .15s, height .15s, background .2s;
+  box-shadow:0 0 8px 2px var(--glow-hi);
+}
+#cur-ring {
+  position:fixed; z-index:9998; pointer-events:none;
+  width:32px; height:32px; border-radius:50%;
+  border:1px solid rgba(122,170,90,.5);
+  transform:translate(-50%,-50%);
+  transition:width .2s, height .2s;
+}
+
+/* ═══════════════════════════════════════
+   NAV
+═══════════════════════════════════════ */
+#nav {
+  position:fixed; top:0; left:0; right:0; z-index:500;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.4rem 2.5rem;
+  transition:background .4s, border-color .4s;
+  border-bottom:1px solid transparent;
+}
+#nav.scrolled {
+  background:rgba(8,14,8,.92);
+  border-color:var(--border);
+  backdrop-filter:blur(12px);
+}
+.nav-logo {
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.1rem; font-weight:300; font-style:italic;
+  color:var(--ink); letter-spacing:.04em;
+}
+.nav-links {
+  display:flex; gap:2.2rem; list-style:none;
+}
+.nav-links a {
+  font-size:.55rem; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--ink-dim); transition:color .2s;
+}
+.nav-links a:hover { color:var(--sage); }
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero {
+  min-height:52vh;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:8rem 3rem 4rem;
+  position:relative; overflow:hidden;
+}
+.hero::before {
+  content:'';
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(122,170,90,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(122,170,90,.03) 1px, transparent 1px);
+  background-size:44px 44px;
+  z-index:0;
+}
+.hero-eyebrow {
+  display:flex; align-items:baseline; gap:1.5rem;
+  margin-bottom:1.2rem; position:relative; z-index:1;
+}
+.hero-eyebrow span {
+  font-size:.55rem; letter-spacing:.35em; text-transform:uppercase;
+  color:var(--sage-dim);
+}
+.hero-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:clamp(2.6rem,6vw,5rem);
+  font-weight:300; letter-spacing:-.02em; line-height:1.1;
+  color:var(--ink); position:relative; z-index:1;
+}
+.hero-title em { font-style:italic; color:var(--sage); }
+.hero-sub {
+  font-size:.65rem; color:var(--ink-dim); line-height:2;
+  max-width:500px; margin-top:1.2rem; position:relative; z-index:1;
+}
+.hero-meta {
+  display:flex; flex-wrap:wrap; align-items:center; gap:1.2rem;
+  margin-top:2rem; padding-top:1.5rem;
+  border-top:1px solid var(--border);
+  position:relative; z-index:1;
+}
+.hero-meta-item {
+  font-size:.52rem; letter-spacing:.25em; text-transform:uppercase;
+  color:var(--ink-dim);
+}
+.hero-meta-item strong { color:var(--ink); font-weight:400; }
+.meta-dot {
+  width:3px; height:3px; border-radius:50%;
+  background:var(--border-hi);
+}
+.hero-tag {
+  font-size:.48rem; letter-spacing:.2em; text-transform:uppercase;
+  padding:.3rem .8rem;
+  border:1px solid var(--border-hi);
+  color:var(--sage);
+  background:rgba(122,170,90,.06);
+}
+.hero-line {
+  position:absolute; bottom:0; left:3rem; right:3rem;
+  height:1px; background:var(--border);
+}
+
+/* ═══════════════════════════════════════
+   ARTICLE LAYOUT
+═══════════════════════════════════════ */
+.article-outer {
+  max-width:1100px;
+  margin:0 auto;
+  padding:4rem 3rem 6rem;
+  display:grid;
+  grid-template-columns:1fr 240px;
+  gap:4rem;
+  align-items:start;
+}
+
+/* ═══════════════════════════════════════
+   ARTICLE CONTENT
+═══════════════════════════════════════ */
+.article-content {
+  opacity:0; transform:translateY(20px);
+  transition:opacity .6s, transform .6s;
+}
+.article-content.visible { opacity:1; transform:translateY(0); }
+
+.article-content p {
+  font-size:.72rem;
+  line-height:2.2;
+  color:var(--ink-dim);
+  margin-bottom:1.8em;
+}
+
+/* drop cap */
+.article-content p:first-of-type::first-letter {
+  font-family:'Cormorant Garamond', serif;
+  font-size:3.8em;
+  float:left;
+  line-height:.8;
+  margin-right:.1em;
+  margin-top:.05em;
+  color:var(--sage);
+  font-weight:300;
+}
+
+.section-break {
+  display:block;
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.4rem;
+  font-weight:300;
+  font-style:italic;
+  color:var(--ink);
+  margin:2.8em 0 1em;
+  padding-bottom:.8rem;
+  border-bottom:1px solid var(--border-hi);
+}
+
+/* pull quote */
+.pull-quote {
+  margin:2.5em 0;
+  padding:1.8rem 2rem;
+  border-left:2px solid var(--sage-dim);
+  background:rgba(122,170,90,.04);
+  position:relative;
+}
+.pull-quote::before {
+  content:'"';
+  font-family:'Cormorant Garamond', serif;
+  font-size:4rem;
+  color:var(--sage-dim);
+  opacity:.4;
+  position:absolute;
+  top:-.5rem; left:1.2rem;
+  line-height:1;
+}
+.pull-quote p {
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.1rem !important;
+  font-style:italic;
+  color:var(--ink) !important;
+  line-height:1.7 !important;
+  margin-bottom:0 !important;
+  padding-left:.5rem;
+}
+.pull-quote cite {
+  display:block;
+  margin-top:.8rem;
+  font-family:'DM Mono', monospace;
+  font-size:.5rem;
+  font-style:normal;
+  color:var(--ink-dim);
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  padding-left:.5rem;
+}
+
+/* tweet embed */
+.tweet-embed {
+  background:var(--bg-3);
+  border:1px solid var(--border-hi);
+  padding:1.4rem 1.6rem;
+  margin:2em 0;
+  position:relative;
+}
+.tweet-embed::before {
+  content:'// STATEMENT';
+  font-size:.45rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--sage-dim);
+  display:block;
+  margin-bottom:.8rem;
+}
+.tweet-author {
+  font-size:.62rem;
+  color:var(--ink);
+  letter-spacing:.05em;
+  margin-bottom:.2rem;
+}
+.tweet-role {
+  font-size:.52rem;
+  color:var(--ink-dim);
+  letter-spacing:.1em;
+  margin-bottom:.9rem;
+  text-transform:uppercase;
+}
+.tweet-body {
+  font-size:.68rem !important;
+  line-height:2 !important;
+  color:var(--ink-dim) !important;
+  font-style:italic;
+  border-left:1px solid var(--border-hi);
+  padding-left:1rem;
+  margin:0 !important;
+}
+
+/* ═══════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════ */
+.sidebar {
+  position:sticky;
+  top:6rem;
+  opacity:0; transform:translateY(20px);
+  transition:opacity .6s .2s, transform .6s .2s;
+}
+.sidebar.visible { opacity:1; transform:translateY(0); }
+
+.back-link {
+  display:inline-flex; align-items:center; gap:.6rem;
+  font-size:.52rem; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--ink-dim); margin-bottom:2rem;
+  transition:color .2s;
+}
+.back-link:hover { color:var(--sage); }
+.back-link::before { content:'←'; font-size:.7rem; }
+
+.sidebar-card {
+  border:1px solid var(--border);
+  background:var(--bg-2);
+  padding:1.4rem 1.2rem;
+  margin-bottom:1.2rem;
+}
+.sidebar-label {
+  font-size:.48rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--sage-dim);
+  margin-bottom:.8rem;
+}
+.sidebar-card p {
+  font-size:.6rem !important;
+  line-height:1.9 !important;
+  color:var(--ink-dim) !important;
+  margin-bottom:0 !important;
+}
+.sidebar-card p strong {
+  color:var(--ink);
+  font-weight:400;
+}
+.sidebar-card a {
+  color:var(--sage);
+  font-size:.6rem;
+  letter-spacing:.1em;
+  transition:color .2s;
+}
+.sidebar-card a:hover { color:var(--ink); }
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer {
+  padding:3rem;
+  border-top:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:.55rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ink-dim);
+}
+footer a { transition:color .2s; }
+footer a:hover { color:var(--sage); }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .hero { padding:7rem 1.5rem 3rem; }
+  .hero-line { left:1.5rem; right:1.5rem; }
+  .article-outer {
+    grid-template-columns:1fr;
+    padding:3rem 1.5rem 4rem;
+    gap:3rem;
+  }
+  .sidebar { position:static; }
+  footer { flex-direction:column; gap:1rem; text-align:center; }
+  #nav { padding:1.2rem 1.5rem; }
+  .nav-links { gap:1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Elaina Niederer</a>
+  <ul class="nav-links">
+    <li><a href="index.html#work">Work</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span>Writing Samples // Reported Article</span>
+  </div>
+  <h1 class="hero-title">MAPPA Studio Faces Backlash<br>From <em>Workers</em></h1>
+  <p class="hero-sub">Animators are pushed to the limit in the name of entertainment</p>
+  <div class="hero-meta">
+    <span class="hero-meta-item"><strong>Elaina Niederer</strong></span>
+    <span class="meta-dot"></span>
+    <span class="hero-meta-item">November 2023</span>
+    <span class="meta-dot"></span>
+    <span class="hero-tag">Class Assignment — Multimedia Storytelling · Seattle University</span>
+  </div>
+  <div class="hero-line"></div>
+</section>
+
+<!-- ARTICLE -->
+<div class="article-outer">
+
+  <article class="article-content reveal-item">
+
+    <p>Last month, anime enthusiasts were buzzing about MAPPA Studios' working conditions as animators voiced concerns over grueling work hours and challenging conditions. Renowned for biting off more than it can chew, the studio faced a backlash for placing a heavy burden on its workforce.</p>
+
+    <p>The latest episodes of <em>Jujutsu Kaisen</em>, a fan-favorite anime, stirred skepticism and debate over animation quality. While the storyline remained captivating, inconsistencies in the animation prompted fans to look closer — and what they found alarmed them. Rumors of non-disclosure agreements surfaced, preventing animators from openly discussing their experiences and further fueling concerns about the toll production was taking on their well-being.</p>
+
+    <p>Reports suggested that animators were subjected to intense work schedules — six to seven days a week, around 12 hours each day. On September 30, speculation arose that the animators of <em>Jujutsu Kaisen</em> were under a non-disclosure agreement, hindering them from expressing dissatisfaction with the production.</p>
+
+    <span class="section-break">Animators Speak Out</span>
+
+    <p>On November 14, 2023, a wave of animators, animation directors, and key animators took to Twitter to shed light on the troubling conditions during production of <em>Jujutsu Kaisen</em> Season 2. The notable figures expressing their concerns included Itsuki Tsuchigami (episode 16 director), Kazuto Arai (episode 13 director and key animator in episode 16), Shunsuke Okubo (episode 12 director), and prominent animator Hakuyu Go.</p>
+
+    <p>Tsuchigami, known for his previous critiques of studio practices, conveyed mixed feelings about MAPPA receiving praise for JJK S2. While acknowledging the hard work of in-house staff, he expressed discomfort with individual achievements being credited to the studio. He reposted past tweets highlighting the challenging schedule and poor planning of the production, citing an apparent NDA preventing him from naming the studio directly.</p>
+
+    <div class="tweet-embed">
+      <div class="tweet-author">Sota Shigetsugu</div>
+      <div class="tweet-role">Key animator, episodes 14 &amp; 16</div>
+      <p class="tweet-body">"The worst cycle is when the staff members all somehow manage to complete a schedule that would be impossible to meet under normal circumstances, while seeing hell, and the higher-ups who only saw the results misunderstand and neglect to improve, thinking 'It's not that bad, it can be done!' I wonder if the beginning of this was when they completed a movie in four months…"</p>
+    </div>
+
+    <p>Shigetsugu's post captured a dynamic that animators described repeatedly: extraordinary effort being used as justification for continued overwork, rather than prompting structural improvement.</p>
+
+    <p>In a striking call to action, Hakuyu Go — not yet credited as an animator in JJK S2 at the time — urged people to quit MAPPA and discard their key cards on the way out, shedding light on the severity of conditions animators were enduring. His posts also emphasized that business partners and board members took precedence over the well-being of animators, raising questions about the industry's priorities.</p>
+
+    <span class="section-break">A Pattern Beyond One Show</span>
+
+    <p>MAPPA's demanding work environment also became evident in the production of <em>Jujutsu Kaisen 0</em>, a prequel film. Despite its financial success, the film was completed in just four months — compared to the typical two-to-three-year timeframe for comparable productions. Various animators, in posts that were later deleted, leaked allegations about working conditions that were subsequently corroborated by others.</p>
+
+    <div class="pull-quote">
+      <p>"I have so much love for the show, it feels so wrong to see such beautiful art and an epic story unfold whilst knowing the talented creatives are suffering in order to entertain us."</p>
+      <cite>— Anna Schreiner, fan of Jujutsu Kaisen, found via social research</cite>
+    </div>
+
+    <p>Criticism extended beyond <em>Jujutsu Kaisen</em>. Animators meeting tight deadlines were allegedly left unsupported by higher-ups, sparking broader debate about how the anime industry treats its creative workforce. The controversy prompted fans to weigh their own enjoyment against the human cost behind the productions they love — a conversation that continues today.</p>
+
+    <p>As fans awaited the continuation of <em>Jujutsu Kaisen</em> Season 2, the backlash cast a shadow on the anime community and raised urgent questions: when audiences reward studios with record viewership and revenue, are they also rewarding systems that exploit the people who make it all possible?</p>
+
+  </article>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar reveal-item">
+    <a href="index.html" class="back-link">Back to Portfolio</a>
+
+    <div class="sidebar-card">
+      <div class="sidebar-label">About This Piece</div>
+      <p>Reported class assignment for <strong>Multimedia Storytelling</strong> at Seattle University, Fall 2023. Research conducted via social media, translated animator statements, and fan community coverage.</p>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-label">Topics</div>
+      <p>Labor rights · Animation industry · Worker exploitation · NDAs in entertainment</p>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-label">Key Sources</div>
+      <p>
+        <strong>Itsuki Tsuchigami</strong> — Episode 16 director<br><br>
+        <strong>Kazuto Arai</strong> — Episode 13 director<br><br>
+        <strong>Sota Shigetsugu</strong> — Key animator, eps. 14 &amp; 16<br><br>
+        <strong>Hakuyu Go</strong> — Animator, JJK S2<br><br>
+        <strong>Shunsuke Okubo</strong> — Episode 12 director
+      </p>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-label">More Work</div>
+      <p><a href="video-work.html">→ Video Work</a></p>
+    </div>
+  </aside>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Elaina Niederer</p>
+  <p>Boise, Idaho — Available for opportunities</p>
+  <a href="http://www.linkedin.com/in/elaina-n-55b5a625a" target="_blank">LinkedIn ↗</a>
+</footer>
+
+<script>
+// Cursor
+const cur = document.getElementById('cur');
+const curR = document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = mx+'px'; cur.style.top = my+'px';
+});
+(function tick(){
+  rx += (mx-rx)*.11; ry += (my-ry)*.11;
+  curR.style.left = rx+'px'; curR.style.top = ry+'px';
+  requestAnimationFrame(tick);
+})();
+document.querySelectorAll('a').forEach(el => {
+  el.addEventListener('mouseenter', () => { cur.style.width='16px'; cur.style.height='16px'; });
+  el.addEventListener('mouseleave', () => { cur.style.width='8px';  cur.style.height='8px'; });
+});
+
+// Nav scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, {passive:true});
+
+// Scroll reveal
+const revItems = document.querySelectorAll('.reveal-item');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.05 });
+revItems.forEach(el => obs.observe(el));
+setTimeout(() => revItems.forEach(el => el.classList.add('visible')), 1500);
+</script>
+</body>
+</html>
