@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer-when-downgrade">
+<meta http-equiv="Content-Security-Policy" content="frame-src https://www.youtube.com https://www.youtube-nocookie.com;">
+<title>Video Work — Elaina Niederer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+  --bg:        #080e08;
+  --bg-2:      #0d150d;
+  --bg-3:      #111c11;
+  --cream:     #f0ede6;
+  --moss:      #3d5a2f;
+  --sage:      #7aaa5a;
+  --sage-dim:  #4a7a34;
+  --glow:      rgba(122,170,90,.18);
+  --glow-hi:   rgba(122,170,90,.55);
+  --silver:    #9ab09a;
+  --chrome:    #c8d8c0;
+  --ink:       #e8f0e0;
+  --ink-dim:   #7a9a7a;
+  --border:    rgba(122,170,90,.12);
+  --border-hi: rgba(122,170,90,.35);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; font-size:16px; }
+body {
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'DM Mono', monospace;
+  font-weight:300;
+  overflow-x:hidden;
+  cursor:none;
+}
+a { color:inherit; text-decoration:none; }
+img { display:block; max-width:100%; }
+
+/* ═══════════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════════ */
+#cur {
+  position:fixed; z-index:9999; pointer-events:none;
+  width:8px; height:8px; border-radius:50%;
+  background:var(--sage);
+  transform:translate(-50%,-50%);
+  transition:width .15s, height .15s, background .2s;
+  box-shadow: 0 0 8px 2px var(--glow-hi);
+}
+#cur-ring {
+  position:fixed; z-index:9998; pointer-events:none;
+  width:32px; height:32px; border-radius:50%;
+  border:1px solid rgba(122,170,90,.5);
+  transform:translate(-50%,-50%);
+  transition:width .2s, height .2s;
+}
+
+/* ═══════════════════════════════════════
+   NAV
+═══════════════════════════════════════ */
+#nav {
+  position:fixed; top:0; left:0; right:0; z-index:500;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.4rem 2.5rem;
+  transition:background .4s, border-color .4s;
+  border-bottom:1px solid transparent;
+}
+#nav.scrolled {
+  background:rgba(8,14,8,.92);
+  border-color:var(--border);
+  backdrop-filter:blur(12px);
+}
+.nav-logo {
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.1rem; font-weight:300; font-style:italic;
+  color:var(--ink); letter-spacing:.04em;
+}
+.nav-links {
+  display:flex; gap:2.2rem; list-style:none;
+}
+.nav-links a {
+  font-size:.55rem; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--ink-dim); transition:color .2s;
+}
+.nav-links a:hover { color:var(--sage); }
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero {
+  min-height:52vh;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:8rem 3rem 4rem;
+  position:relative; overflow:hidden;
+}
+.hero::before {
+  content:'';
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(122,170,90,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(122,170,90,.03) 1px, transparent 1px);
+  background-size:44px 44px;
+  z-index:0;
+}
+.hero-eyebrow {
+  display:flex; align-items:baseline; gap:1.5rem;
+  margin-bottom:1.2rem; position:relative; z-index:1;
+}
+.hero-eyebrow span {
+  font-size:.55rem; letter-spacing:.35em; text-transform:uppercase;
+  color:var(--sage-dim);
+}
+.hero-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:clamp(3rem,7vw,6rem);
+  font-weight:300; letter-spacing:-.02em; line-height:1;
+  color:var(--ink); position:relative; z-index:1;
+}
+.hero-title em { font-style:italic; color:var(--sage); }
+.hero-sub {
+  font-size:.65rem; color:var(--ink-dim); line-height:2;
+  max-width:480px; margin-top:1.5rem; position:relative; z-index:1;
+}
+.hero-line {
+  position:absolute; bottom:0; left:3rem; right:3rem;
+  height:1px; background:var(--border);
+}
+
+/* ═══════════════════════════════════════
+   SECTION HEADERS
+═══════════════════════════════════════ */
+.section-header {
+  display:flex; align-items:baseline; gap:1.5rem;
+  margin-bottom:3rem;
+}
+.section-header .num {
+  font-size:.55rem; letter-spacing:.35em; text-transform:uppercase;
+  color:var(--sage-dim);
+}
+.section-header h2 {
+  font-family:'Cormorant Garamond', serif;
+  font-size:clamp(1.8rem,3.5vw,2.8rem);
+  font-weight:300; letter-spacing:-.02em;
+  color:var(--ink);
+}
+.section-header h2 em { font-style:italic; color:var(--sage); }
+
+/* ═══════════════════════════════════════
+   CLIENT SECTIONS
+═══════════════════════════════════════ */
+.client-section {
+  padding:5rem 3rem;
+  border-bottom:1px solid var(--border);
+  position:relative;
+}
+.client-section:last-child { border-bottom:none; }
+
+/* client label strip */
+.client-label {
+  display:inline-flex; align-items:center; gap:.8rem;
+  margin-bottom:3.5rem;
+  padding:.4rem 1rem .4rem .6rem;
+  border:1px solid var(--border-hi);
+  background:rgba(122,170,90,.05);
+}
+.client-label .dot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--sage);
+  box-shadow:0 0 6px 2px var(--glow-hi);
+}
+.client-label span {
+  font-size:.52rem; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--sage);
+}
+
+/* ═══════════════════════════════════════
+   VIDEO GRID
+═══════════════════════════════════════ */
+.video-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+  gap:2.5rem;
+}
+.video-grid.two-col {
+  grid-template-columns:repeat(2, 1fr);
+}
+.video-grid.single {
+  grid-template-columns:1fr;
+  max-width:680px;
+}
+
+/* ═══════════════════════════════════════
+   VIDEO CARD
+═══════════════════════════════════════ */
+.video-card {
+  display:flex; flex-direction:column; gap:1.4rem;
+  opacity:0; transform:translateY(24px);
+  transition:opacity .6s ease, transform .6s ease;
+}
+.video-card.visible { opacity:1; transform:translateY(0); }
+
+.video-wrap {
+  position:relative;
+  border:1px solid var(--border);
+  overflow:hidden;
+  background:var(--bg-3);
+  transition:border-color .3s;
+}
+.video-wrap:hover { border-color:var(--border-hi); }
+
+/* YouTube shorts are 9:16 */
+.video-wrap.shorts {
+  aspect-ratio:9/16;
+  max-width:320px;
+  margin:0 auto;
+  width:100%;
+}
+
+/* subtle glow on hover */
+.video-wrap::after {
+  content:'';
+  position:absolute; inset:0;
+  box-shadow:inset 0 0 40px rgba(122,170,90,.08);
+  pointer-events:none;
+  opacity:0; transition:opacity .3s;
+}
+.video-wrap:hover::after { opacity:1; }
+
+.video-wrap iframe {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  border:none;
+}
+
+.video-meta { padding:0 .2rem; }
+
+.video-tag {
+  font-size:.48rem; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--sage-dim); margin-bottom:.5rem;
+}
+.video-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.25rem; font-weight:300;
+  color:var(--ink); margin-bottom:.7rem; line-height:1.3;
+}
+.video-desc {
+  font-size:.62rem; line-height:2; color:var(--ink-dim);
+}
+
+/* role chips */
+.role-chips {
+  display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.9rem;
+}
+.chip {
+  font-size:.47rem; letter-spacing:.2em; text-transform:uppercase;
+  padding:.25rem .7rem;
+  border:1px solid var(--border-hi);
+  color:var(--ink-dim);
+  background:rgba(122,170,90,.04);
+}
+
+/* ═══════════════════════════════════════
+   LIFESTYLE COLLAGE LAYOUT
+═══════════════════════════════════════ */
+.collage-wrap {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2.5rem;
+  align-items:start;
+}
+.collage-desc {
+  display:flex; flex-direction:column; justify-content:center;
+  padding:2rem 0;
+}
+.collage-desc .video-tag { margin-bottom:.8rem; }
+.collage-desc .video-title {
+  font-size:clamp(1.4rem,2.5vw,2rem);
+  margin-bottom:1rem;
+}
+.collage-desc .video-desc { margin-bottom:1.2rem; }
+.collage-videos {
+  display:flex; flex-direction:column; gap:1.5rem;
+}
+.collage-videos .video-wrap.shorts {
+  max-width:260px;
+}
+
+/* ═══════════════════════════════════════
+   STANDALONE VIDEO (CRT / Pike Place)
+═══════════════════════════════════════ */
+.feature-video {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3rem;
+  align-items:center;
+  opacity:0; transform:translateY(24px);
+  transition:opacity .6s ease, transform .6s ease;
+}
+.feature-video.visible { opacity:1; transform:translateY(0); }
+.feature-video .video-wrap.shorts {
+  max-width:300px;
+  margin:0 auto;
+}
+.feature-video .video-meta { padding:0; }
+.feature-video .video-title {
+  font-size:clamp(1.4rem,2.5vw,2rem);
+  margin-bottom:1rem;
+}
+
+/* ═══════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════ */
+.divider {
+  height:1px; background:var(--border);
+  margin:4rem 0;
+  position:relative;
+}
+.divider::before {
+  content:'';
+  position:absolute; left:0; top:-1px;
+  width:60px; height:3px;
+  background:var(--sage-dim); opacity:.5;
+}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer {
+  padding:3rem;
+  border-top:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:.55rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ink-dim);
+}
+footer a { transition:color .2s; }
+footer a:hover { color:var(--sage); }
+
+/* ═══════════════════════════════════════
+   BACK LINK
+═══════════════════════════════════════ */
+.back-link {
+  display:inline-flex; align-items:center; gap:.6rem;
+  font-size:.52rem; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--ink-dim); margin-bottom:3rem;
+  transition:color .2s;
+}
+.back-link:hover { color:var(--sage); }
+.back-link::before { content:'←'; font-size:.7rem; }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .hero { padding:7rem 1.5rem 3rem; }
+  .client-section { padding:3.5rem 1.5rem; }
+  .collage-wrap { grid-template-columns:1fr; }
+  .feature-video { grid-template-columns:1fr; }
+  .video-grid.two-col { grid-template-columns:1fr; }
+  footer { flex-direction:column; gap:1rem; text-align:center; }
+  #nav { padding:1.2rem 1.5rem; }
+  .nav-links { gap:1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Elaina Niederer</a>
+  <ul class="nav-links">
+    <li><a href="index.html#work">Work</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span>Social Media // Video Work</span>
+  </div>
+  <h1 class="hero-title">Video <em>Production</em></h1>
+  <p class="hero-sub">A collection of social media video work spanning scripting, voiceover, creative direction, filming, editing, and interview strategy — built for real brands and causes.</p>
+  <div class="hero-line"></div>
+</section>
+
+<main>
+
+  <!-- ══════════════════════════════════
+       BRUCE RANCH BEEF CSA
+  ══════════════════════════════════ -->
+  <section class="client-section">
+    <a href="index.html" class="back-link">Back to Portfolio</a>
+
+    <div class="client-label">
+      <div class="dot"></div>
+      <span>Client — Bruce Ranch Beef CSA</span>
+    </div>
+
+    <div class="section-header">
+      <span class="num">01 //</span>
+      <h2>Bruce Ranch <em>Beef CSA</em></h2>
+    </div>
+
+    <!-- Update on the Range — single feature -->
+    <div class="feature-video reveal-item">
+      <div class="video-wrap shorts">
+        <iframe src="https://www.youtube.com/embed/qW2YRHdNYqQ?rel=0&amp;playsinline=1"
+          title="Update on the Range"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="video-meta">
+        <p class="video-tag">Bruce Ranch Beef CSA</p>
+        <h3 class="video-title">Update on the Range</h3>
+        <p class="video-desc">A ranch check-in video built from family footage. I wrote the script, recorded the voiceover, and handled all editing — turning raw clips into a grounded, authentic piece that speaks directly to the CSA's audience and communicates the real work happening on the land.</p>
+        <div class="role-chips">
+          <span class="chip">Scriptwriting</span>
+          <span class="chip">Voiceover</span>
+          <span class="chip">Full Editing</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Lifestyle Collage — two videos side by side with shared description -->
+    <div class="collage-wrap reveal-item">
+      <div class="collage-desc">
+        <p class="video-tag">Bruce Ranch Beef CSA</p>
+        <h3 class="video-title">Lifestyle <em style="font-style:italic;color:var(--sage);">Collage</em></h3>
+        <p class="video-desc">A two-part visual series capturing the rhythm and atmosphere of cattle ranch life. Set to music, these short-form videos function as a lifestyle mood board for the brand — scenes from a cattle drive to summer range, edited into something that feels like a day lived, not just documented.</p>
+        <div class="role-chips">
+          <span class="chip">Video Editing</span>
+          <span class="chip">Music Selection</span>
+          <span class="chip">Brand Storytelling</span>
+        </div>
+      </div>
+      <div class="collage-videos">
+        <div class="video-card reveal-item">
+          <div class="video-wrap shorts">
+            <iframe src="https://www.youtube.com/embed/cVkC7Q8w3hA?rel=0&amp;playsinline=1"
+              title="Cattle Drive to Summer Range"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen loading="lazy"></iframe>
+          </div>
+          <div class="video-meta">
+            <p class="video-tag">Part I</p>
+            <p class="video-title" style="font-size:1rem;">Cattle Drive to Summer Range</p>
+          </div>
+        </div>
+        <div class="video-card reveal-item">
+          <div class="video-wrap shorts">
+            <iframe src="https://www.youtube.com/embed/E9vNHeL2N80?rel=0&amp;playsinline=1"
+              title="Lifestyle Collage II"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen loading="lazy"></iframe>
+          </div>
+          <div class="video-meta">
+            <p class="video-tag">Part II</p>
+            <p class="video-title" style="font-size:1rem;">Summer Range</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Recipe Video -->
+    <div class="feature-video reveal-item">
+      <div class="video-wrap shorts">
+        <iframe src="https://www.youtube.com/embed/PS6dohMdBLY?rel=0&amp;playsinline=1"
+          title="Recipe Video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="video-meta">
+        <p class="video-tag">Bruce Ranch Beef CSA</p>
+        <h3 class="video-title">Recipe Video</h3>
+        <p class="video-desc">A recipe video anchored in a timely cultural hook — new reporting on DoorDash and takeout food trends. Rather than leading with the recipe, I used the news cycle as the entry point, connecting a broader conversation about how we eat to the value of knowing where your beef comes from. Content strategy and hook writing informed by what people were already talking about.</p>
+        <div class="role-chips">
+          <span class="chip">Hook Strategy</span>
+          <span class="chip">Content Writing</span>
+          <span class="chip">Editing</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════
+       CALIFORNIA RANGELAND TRUST
+  ══════════════════════════════════ -->
+  <section class="client-section">
+
+    <div class="client-label">
+      <div class="dot"></div>
+      <span>Client — California Rangeland Trust</span>
+    </div>
+
+    <div class="section-header">
+      <span class="num">02 //</span>
+      <h2>California <em>Rangeland Trust</em></h2>
+    </div>
+
+    <div class="feature-video reveal-item">
+      <div class="video-wrap shorts">
+        <iframe src="https://www.youtube.com/embed/y18dtQufJe8?rel=0&amp;playsinline=1"
+          title="Yolo Ranch — Healthy Soil Practices"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="video-meta">
+        <p class="video-tag">California Rangeland Trust</p>
+        <h3 class="video-title">Yolo Ranch — Scott & Karen Stone</h3>
+        <p class="video-desc">An interview-driven piece highlighting healthy soil practices at Yolo Ranch. Working with pre-recorded footage and a full transcript, I identified the most compelling quotes and pieced them together into a cohesive narrative promoting CRT's soil health programs. A constraint-driven edit that required finding the story within what already existed — and knowing what to leave out.</p>
+        <div class="role-chips">
+          <span class="chip">Transcript Review</span>
+          <span class="chip">Quote Selection</span>
+          <span class="chip">Narrative Editing</span>
+          <span class="chip">Post-Production</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════
+       PIKE PLACE MARKET FOUNDATION
+  ══════════════════════════════════ -->
+  <section class="client-section">
+
+    <div class="client-label">
+      <div class="dot"></div>
+      <span>Client — Pike Place Market Foundation</span>
+    </div>
+
+    <div class="section-header">
+      <span class="num">03 //</span>
+      <h2>Pike Place <em>Market Foundation</em></h2>
+    </div>
+
+    <div class="feature-video reveal-item">
+      <div class="video-wrap shorts">
+        <iframe src="https://www.youtube.com/embed/D2o4pPtD-NM?rel=0&amp;playsinline=1"
+          title="Pike Place Market Foundation — Raluca Interview"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="video-meta">
+        <p class="video-tag">Pike Place Market Foundation</p>
+        <h3 class="video-title">Raluca — A Memory of the Market</h3>
+        <p class="video-desc">The hook for this piece came from a single question: what specific memory does this place hold for you? By asking Raluca to go beyond general support and recall something personal, I found the emotional core of the story. As creative director, I developed the interview questions, led the filming strategy, handled audio editing, and assembled the final piece from footage — building a narrative around memory, place, and what community spaces actually mean to people.</p>
+        <div class="role-chips">
+          <span class="chip">Creative Direction</span>
+          <span class="chip">Interview Writing</span>
+          <span class="chip">Filming Strategy</span>
+          <span class="chip">Audio Editing</span>
+          <span class="chip">Post-Production</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Elaina Niederer</p>
+  <p>Boise, Idaho — Available for opportunities</p>
+  <a href="http://www.linkedin.com/in/elaina-n-55b5a625a" target="_blank">LinkedIn ↗</a>
+</footer>
+
+<script>
+// Cursor
+const cur = document.getElementById('cur');
+const curR = document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = mx+'px'; cur.style.top = my+'px';
+});
+(function tick(){
+  rx += (mx-rx)*.11; ry += (my-ry)*.11;
+  curR.style.left = rx+'px'; curR.style.top = ry+'px';
+  requestAnimationFrame(tick);
+})();
+document.querySelectorAll('a,.video-wrap').forEach(el => {
+  el.addEventListener('mouseenter', () => { cur.style.width='16px'; cur.style.height='16px'; });
+  el.addEventListener('mouseleave', () => { cur.style.width='8px';  cur.style.height='8px'; });
+});
+
+// Nav scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, {passive:true});
+
+// Scroll reveal
+const revItems = document.querySelectorAll('.reveal-item');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+revItems.forEach(el => obs.observe(el));
+// Fallback
+setTimeout(() => revItems.forEach(el => el.classList.add('visible')), 1500);
+</script>
+</body>
+</html>
